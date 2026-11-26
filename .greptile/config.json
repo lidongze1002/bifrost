@@ -61,6 +61,12 @@
       "rule": "E2E API payloads must be constructed directly as object literals. Do not serialize through maps, Records, Object.fromEntries, or JSON round trips because field order matters.",
       "scope": ["tests/e2e/**"],
       "severity": "medium"
+    },
+    {
+      "id": "audit-commit-point",
+      "rule": "A handler that saves config must record its typed audit event with lib.RecordAuditChange right after the write commits, before any later step that can fail (reload, read-back, rebuild, broadcast, key or cache reload). Flag an error return between a successful write and the record call, including a new step a PR inserts into an existing handler above an untouched record call, and a new handler that saves config without any typed event.",
+      "scope": ["transports/bifrost-http/handlers/**"],
+      "severity": "high"
     }
   ]
 }

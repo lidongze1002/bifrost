@@ -72,6 +72,10 @@ For `transports/bifrost-http/handlers/**`:
 - Check request parsing, error status codes, and middleware ordering.
 - Keep runtime config updates and persistent store updates rollback-aware so in-memory state, core state, and database state do not silently diverge.
 
+For audit events in `transports/bifrost-http/handlers/**`:
+
+- Audit commit point: a handler that saves config must record its typed audit event with `lib.RecordAuditChange` right after the write commits, before any step that can still fail (reload, read-back, rebuild, broadcast, key or cache reload). Flag an error return between a successful write and the record call, including a step a PR inserts above an existing, unchanged record call, so review the whole handler and not just the diff. Also flag a record placed before the write, a handler that saves config with no typed event, and a snapshot that carries a secret.
+
 For `plugins/governance/**`:
 
 - Review budget, rate-limit, virtual key, and RBAC paths for fail-closed behavior where security is involved.
